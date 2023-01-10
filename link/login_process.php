@@ -11,7 +11,7 @@ $result = mysqli_query($connect, $query);
 if(mysqli_num_rows($result)==1){
     $row = mysqli_fetch_assoc($result);
     session_start();
-    $_SESSION['login'] == "1";
+    $_SESSION['login']== "1";
     $_SESSION['login_id'] = $row['id'];
    
     header("Location:../dashboard.php?");
@@ -19,6 +19,6 @@ if(mysqli_num_rows($result)==1){
 }
 else
 {
-    header("Location:../login.php?errmsg:email or password doesnot match");
+    header("Location:../login.php?errmsg=email or password doesnot match");
 }
 ?>

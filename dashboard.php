@@ -4,6 +4,9 @@
 <?php
 include('link/connect_database.php');
 session_start();
+if(isset($_SESSION['login'])){
+  
+
 
 $id = $_SESSION['login_id'];
 
@@ -15,6 +18,12 @@ if(mysqli_num_rows($result)!=1){
   die("you are not allowed to edit ");
 }
 $row = mysqli_fetch_assoc($result);
+
+  $exp = "SELECT * FROM experience WHERE user_id='$id'";
+  $res = mysqli_query($connect,$exp);
+  // $exp_row = mysqli_fetch_assoc($res);
+
+  
 ?>
 
 <style>
@@ -39,7 +48,7 @@ $row = mysqli_fetch_assoc($result);
       <div class="card border-primary">
         <div class="card-header">
             About 
-            <a href="#" style="float:right;"  data-bs-toggle="modal" data-bs-target="#about">Edit</a>
+            <a href="#" style="float:right;"  data-bs-toggle="modal" data-bs-target="#about"><i class="fa-solid fa-pencil"></i></a>
         </div>
         <div class="card-body">
             <p><?php echo $row['about']; ?></p>
@@ -48,13 +57,13 @@ $row = mysqli_fetch_assoc($result);
     </div>
   </div>
   </div>
-
+<div class="container">
   <div class="row mt-4">
-   <div class="col">
-   <div class="card border-info">
+   <div class="col-4">
+   <div class="card border-info"> 
             <div class="card-header">
                 Skills
-                <a href="#" style="float:right;" data-bs-toggle="modal" data-bs-target="#skill">Add</a>
+                <a href="#" style="float:right;" data-bs-toggle="modal" data-bs-target="#skill"><i class="fa-solid fa-pencil"></i></a>
             </div>
             <div class="card-body">
             <ul class="list-group skill">
@@ -66,49 +75,43 @@ $row = mysqli_fetch_assoc($result);
                 </ul>
             </div>
         </div>
+        <br>
+        <div class="card">
+       <div class="card-header">
+        Education
+        <a href="#" data-bs-toggle="modal" data-bs-target="#education" style="float:right"><i class="fa-solid fa-pencil"></i></a>
+       </div>
+       <div class="card-body">
+          <ul class="list-group">
+            <li class="list-group-item">SEE</li>
+            <li class="list-group-item">+2</li>
+          </ul>
+       </div>
+    </div>
    </div>
-   <div class="col">
+   <div class="col-8">
    <div class="card">
                 <div class="card-header">
                     Experience
-                    <a href="#" style="float:right;" data-bs-toggle="modal" data-bs-target="#experience">Edit</a>
+                    <a href="#" style="float:right;" data-bs-toggle="modal" data-bs-target="#experience"><i class="fa-solid fa-pencil"></i></a>
                 </div>
                 <div class="card-body">
                        <div class="exp border-info">
-                       <h5>Java Developer</h5>
-                        <hr/>
-                        <small>ABC Company</small><br/><small>Join Date: 2021/01/01</small> , <small>Left Date: 2022/02/02</small>
+                        <?php while($exp_row=mysqli_fetch_assoc($res)){ ?>
+                          <h5><?php echo $exp_row['job_title']; ?></h5>
+                          <hr/>
+                        <small><?php echo $exp_row['company_name']; ?></small><br/><small><?php echo $exp_row['join_date'] ?></small> , <small><?php echo $exp_row['left_date'] ?></small>
+                      <?php  } ?>
+                       
+                        
                        </div>
-                       <div class="exp border-info">
-                       <h5>Java Developer</h5>
-                        <hr/>
-                        <small>ABC Company</small><br/><small>Join Date: 2021/01/01</small> , <small>Left Date: 2022/02/02</small>
-                       </div>
-                       <div class="exp border-info">
-                       <h5>Java Developer</h5>
-                        <hr/>
-                        <small>ABC Company</small><br/><small>Join Date: 2021/01/01</small> <small>Left Date: 2022/02/02</small>
-                       </div>
+                     
                 </div>
             </div>
    </div>
   </div>
-  <div class="row mt-4">
-    <div class="col-4">
-    <div class="card">
-       <div class="card-header">
-        Education
-        <a href="#" data-bs-toggle="modal" data-bs-target="#education" style="float:right">Edit</a>
-       </div>
-       <div class="card-body">
 
-       </div>
-    </div>
-    </div>
-  
   </div>
-
-
 
 <!--All are modal -->
 <div class="modal fade" id="about" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -157,12 +160,19 @@ $row = mysqli_fetch_assoc($result);
         <h1 class="modal-title fs-5" id="staticBackdropLabel">Add Skill</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
+      <form action="#" method="post">
       <div class="modal-body">
+      <div class="mb-3">
+    <label class="form-label">Skill Name</label>
+    <input type="text" name="skill"class="form-control" aria-describedby="emailHelp">
+    
+  </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         <button type="submit" class="btn btn-primary">Save</button>
       </div>
+      </form>
     </div>
   </div>
 </div>
@@ -175,18 +185,31 @@ $row = mysqli_fetch_assoc($result);
         <h1 class="modal-title fs-5" id="staticBackdropLabel">Add Degree</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
+      <form action="#" method="post">
       <div class="modal-body">
+      <div class="mb-3">
+    <label class="form-label">Degree Name</label>
+    <input type="text" name="degree_name" class="form-control" aria-describedby="emailHelp">
+    
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Passed year</label>
+    <input type="date" name="passed_date" class="form-control" aria-describedby="emailHelp">
+    
+  </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         <button type="submit" class="btn btn-primary">Save</button>
       </div>
+      </form>
     </div>
   </div>
 </div>
 
 
 <!--experience modal -->
+
 <div class="modal fade" id="experience" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -194,14 +217,44 @@ $row = mysqli_fetch_assoc($result);
         <h1 class="modal-title fs-5" id="staticBackdropLabel">Add Experience</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
+      <form action="link/update_exp.php" method="post">
       <div class="modal-body">
+      <div class="mb-3">
+    <label class="form-label">Job Title</label>
+    <input type="text" name="job_title" class="form-control" aria-describedby="emailHelp">
+    
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Company Name</label>
+    <input type="text" name="cname" class="form-control" aria-describedby="emailHelp">
+    
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Joined Date</label>
+    <input type="date" name="j_date" class="form-control" aria-describedby="emailHelp">
+    
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Left Date</label>
+    <input type="date" name="l_date" class="form-control" aria-describedby="emailHelp">
+    
+  </div>
+  <select name="user_id">
+        <option value="<?php echo $row['id']; ?>"></option>
+      </select>
+      <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="submit" class="btn btn-primary" name="submit">Save</button>
       </div>
+    
+      </form>
     </div>
   </div>
 </div>
 
+<?php } else { ?>
+ <?php header("Location:login.php?errmsg:login first");
+}?>
 <?php include('html/footer.php');?>

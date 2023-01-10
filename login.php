@@ -7,7 +7,10 @@ include 'html/footer.php';
 <div class="container mt-3">
     <h2>Login</h2>
     <div class="card-p3">
-     <div class="alert alert-danger"> <?php include('html/message.php') ?></div>
+      <?php if(isset($_GET['errmsg'])){?>
+        <div class="alert alert-danger"><?php echo $_GET['errmsg'];?></div>
+   <?php   } ?>
+   
     </div>
     <form method="post" action="link/login_process.php">
         
