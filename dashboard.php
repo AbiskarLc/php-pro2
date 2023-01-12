@@ -4,7 +4,9 @@
 <?php
 include('link/connect_database.php');
 session_start();
-if(isset($_SESSION['login'])){
+if(!isset($_SESSION['login'])){
+  header("Location:../login.php?errmsg:login First");
+}
   
 
 
@@ -27,22 +29,25 @@ $row = mysqli_fetch_assoc($result);
 ?>
 
 <style>
-   .image-body>input{
-    display: none;
-   }
+
+.img_patn>input{
+  display: none;
+}
 </style>
 <div class="container mt-4">
   <div class="row">
     <div class="col-4">
        <div class="image-body">
-        <label for="file-upload">
-          <img src="img/profile.jpg" alt="" style="width:200px;height:200px;border-radius:50%">
+        <div class="img_patn">
+        <label for="file-input">
+          <img src="/blog-3<?php echo $row['profile_img']; ?>" style="width:200px;height:200px;border-radius:50%">
           </label>
         
-          <input type="file" name="image" class="form-control"/>
+          <input type="file" id="file-input" name="image" class="form-control"/>
         
-       </div>
+          </div>
        <h3><?php echo $row['full_name']; ?></h3>
+       </div>
     </div>
     <div class="col-8">
       <div class="card border-primary">
@@ -67,11 +72,16 @@ $row = mysqli_fetch_assoc($result);
             </div>
             <div class="card-body">
             <ul class="list-group skill">
-                <li class="list-group-item">Web design</li>
-                <li class="list-group-item">Web Development with PHP</li>
-                <li class="list-group-item">Java </li>
-                <li class="list-group-item">C/C++</li>
-                <li class="list-group-item">Android Mobile application</li>
+                
+                <?php
+                $skill_query = "SELECT * FROM skills WHERE user_id";
+
+                $skill_con = mysqli_query($connect, $skill_query);
+                ?>
+                <?php while($row_sk=mysqli_fetch_assoc($skill_con)) { ?>
+                  <li class="list-group-item"><?php echo $row_sk['skill_name']; ?></li>
+               <?php } ?>
+                
                 </ul>
             </div>
         </div>
@@ -83,8 +93,9 @@ $row = mysqli_fetch_assoc($result);
        </div>
        <div class="card-body">
           <ul class="list-group">
-            <li class="list-group-item">SEE</li>
-            <li class="list-group-item">+2</li>
+           
+            <li class="list-group-item"></li>
+            
           </ul>
        </div>
     </div>
@@ -98,8 +109,9 @@ $row = mysqli_fetch_assoc($result);
                 <div class="card-body">
                        <div class="exp border-info">
                         <?php while($exp_row=mysqli_fetch_assoc($res)){ ?>
-                          <h5><?php echo $exp_row['job_title']; ?></h5>
                           <hr/>
+                          <h5><?php echo $exp_row['job_title']; ?></h5>
+                         
                         <small><?php echo $exp_row['company_name']; ?></small><br/><small><?php echo $exp_row['join_date'] ?></small> , <small><?php echo $exp_row['left_date'] ?></small>
                       <?php  } ?>
                        
@@ -113,6 +125,23 @@ $row = mysqli_fetch_assoc($result);
 
   </div>
 
+  <div class="container mt-4">
+  <div class="card bg-secondary" style="width:400px">
+       <div class="card-header bg-info">
+        University
+        <a href="#" data-bs-toggle="modal" data-bs-target="#uniname" style="float:right"><i class="fa-solid fa-pencil"></i></a>
+       </div>
+       <div class="card-body">
+          <ul class="list-group">
+            <li class="list-group-item">Havard</li>
+            
+          </ul>
+       </div>
+    </div>
+    <a href="link/signout.php"><button type="submit" class="btn btn-danger" style="float:right;">Logout</button></a>
+  </div>
+
+ 
 <!--All are modal -->
 <div class="modal fade" id="about" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -121,7 +150,7 @@ $row = mysqli_fetch_assoc($result);
         <h1 class="modal-title fs-5" id="staticBackdropLabel">About</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <form action="link/update_user.php" method="post">
+      <form action="link/update_user.php" method="post" enctype="multipart/form-data">
       <div class="modal-body">
       <div class="mb-3">
     <label for="exampleInputEmail1" class="form-label">Full Name</label>
@@ -143,6 +172,11 @@ $row = mysqli_fetch_assoc($result);
     <input type="text" name="about" value="<?php echo $row['about']; ?>"class="form-control" aria-describedby="emailHelp">
     
   </div>
+  <div class="mb-3">
+    <label for="exampleInputEmail1" class="form-label">Image File</label>
+    <input type="file" name="image" class="form-control">
+    
+  </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -160,13 +194,14 @@ $row = mysqli_fetch_assoc($result);
         <h1 class="modal-title fs-5" id="staticBackdropLabel">Add Skill</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <form action="#" method="post">
+      <form action="link/update_skill.php" method="post">
       <div class="modal-body">
       <div class="mb-3">
     <label class="form-label">Skill Name</label>
     <input type="text" name="skill"class="form-control" aria-describedby="emailHelp">
     
   </div>
+  <input type="hidden" name="user_id" value="<?php echo $row['id']; ?>">
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -254,7 +289,5 @@ $row = mysqli_fetch_assoc($result);
   </div>
 </div>
 
-<?php } else { ?>
- <?php header("Location:login.php?errmsg:login first");
-}?>
+
 <?php include('html/footer.php');?>
