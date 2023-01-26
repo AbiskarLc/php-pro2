@@ -37,7 +37,9 @@
             <li><a class="dropdown-item" href="#">Something else here</a></li>
           </ul>
         </li>
-    
+      <li class="nav-item">
+      <a href="link/signout.php"><button type="submit" class="btn btn-danger" style="float:right;">Logout</button></a>
+      </li>
 
       </ul>
       <form class="d-flex" role="search">

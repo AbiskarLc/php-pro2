@@ -1,4 +1,4 @@
-<?php include('html/header.php');?>
+<?php include('html/header-1.php');?>
 
 
 <?php
@@ -40,7 +40,7 @@ $row = mysqli_fetch_assoc($result);
        <div class="image-body">
         <div class="img_patn">
         <label for="file-input">
-          <img src="/blog-3<?php echo $row['profile_img']; ?>" style="width:200px;height:200px;border-radius:50%">
+          <img src="/blog-3<?php echo $row['profile_img']; ?>" style="width:200px;height:200px;border-radius:50%;background-size:cover;">
           </label>
         
           <input type="file" id="file-input" name="image" class="form-control"/>
@@ -74,7 +74,7 @@ $row = mysqli_fetch_assoc($result);
             <ul class="list-group skill">
                 
                 <?php
-                $skill_query = "SELECT * FROM skills WHERE user_id";
+                $skill_query = "SELECT * FROM skills WHERE user_id='$id'";
 
                 $skill_con = mysqli_query($connect, $skill_query);
                 ?>
@@ -92,9 +92,16 @@ $row = mysqli_fetch_assoc($result);
         <a href="#" data-bs-toggle="modal" data-bs-target="#education" style="float:right"><i class="fa-solid fa-pencil"></i></a>
        </div>
        <div class="card-body">
-          <ul class="list-group">
+          <ul class="list-group education">
            
-            <li class="list-group-item"></li>
+          <?php
+                $edu_query = "SELECT * FROM education WHERE user_id='$id'";
+
+                $edu_con = mysqli_query($connect, $edu_query);
+                ?>
+                <?php while($row_ed=mysqli_fetch_assoc($edu_con)) { ?>
+                  <li class="list-group-item"><?php echo $row_ed['degree_name']; ?> <br> <small><?php echo $row_ed["passed_year"];   ?> </small></li>
+               <?php } ?>
             
           </ul>
        </div>
@@ -112,7 +119,7 @@ $row = mysqli_fetch_assoc($result);
                           <hr/>
                           <h5><?php echo $exp_row['job_title']; ?></h5>
                          
-                        <small><?php echo $exp_row['company_name']; ?></small><br/><small><?php echo $exp_row['join_date'] ?></small> , <small><?php echo $exp_row['left_date'] ?></small>
+                        <h6><?php echo $exp_row['company_name']; ?></h6><small>Joined Date: <?php echo $exp_row['join_date'] ?></small> <br> <small>Left Date: <?php echo $exp_row['left_date'] ?></small>
                       <?php  } ?>
                        
                         
@@ -138,7 +145,7 @@ $row = mysqli_fetch_assoc($result);
           </ul>
        </div>
     </div>
-    <a href="link/signout.php"><button type="submit" class="btn btn-danger" style="float:right;">Logout</button></a>
+    
   </div>
 
  
@@ -220,7 +227,7 @@ $row = mysqli_fetch_assoc($result);
         <h1 class="modal-title fs-5" id="staticBackdropLabel">Add Degree</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <form action="#" method="post">
+      <form action="link/update_edu.php" method="post">
       <div class="modal-body">
       <div class="mb-3">
     <label class="form-label">Degree Name</label>
@@ -232,6 +239,7 @@ $row = mysqli_fetch_assoc($result);
     <input type="date" name="passed_date" class="form-control" aria-describedby="emailHelp">
     
   </div>
+  <input type="hidden" name="user_id" value="<?php echo $row['id']; ?>">
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

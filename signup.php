@@ -6,6 +6,11 @@ include 'html/footer.php';
 ?>
 
     <div class="container mt-3">
+      <div class="card-p3">
+      <?php  if(isset($_GET['errmsg'])){ ?>
+        <div class="alert alert-danger"><?php echo $_GET['errmsg'];?></div>
+    <?php  }  ?>
+    </div>
         <h2>Signup</h2>
         <form method="POST" action="link/signup_process.php">
             <div class="mb-3">
@@ -24,7 +29,7 @@ include 'html/footer.php';
   </div>
   <div class="mb-3">
     <label for="exampleInputEmail1" class="form-label">Email address</label>
-    <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+    <input type="text" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
     <div id="emailHelp"  class="form-text">We'll never share your email with anyone else.</div>
   </div>
   <div class="mb-3">
